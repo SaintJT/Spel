@@ -1,0 +1,157 @@
+import random as rand
+
+    
+class player_role():
+    def __init__(self, role, HP, Damage):
+        self.role = role
+        self.hp = HP
+        self.damage = Damage
+
+class weapon():
+    def __init__(self, name, damage, endurance, rarity):
+        self.name = name
+        self.damage = damage
+        self.endurance = endurance
+        self.rarity = rarity
+
+class monster():
+    def __init__(self, damage, HP):
+        self.damage = damage
+        self.hp = HP
+
+class path():
+     def __init__(self, adjective ):
+          self.adjective = adjective
+
+    
+
+
+def user(username):
+    while True:
+        class_choice = input("""
+                Please select a class
+                1. Knight
+                2. Samurai
+                3. Viking
+                4. Class stats
+            """)
+
+        if class_choice == "1":
+                player = player_role("knight", 20, 10)
+                print(f"Welcome brave Knight {username}, hm Knight {username} sure has a very nice ring to it")
+                break
+        elif class_choice == "2":
+                player = player_role("Samurai", 15, 15)
+                print(f"Welcome brave Samurai {username}, i get the feeling that the name Samurai {username} will bring peace to all of the lands")
+                break
+        elif class_choice == "3":
+            playe = player_role("Viking", 10, 20)
+            print(f"Welcome Viking {username}, you are a feirce warior of the sea")
+            break
+        elif class_choice == "4":
+            print("""
+                Knights are tough but don't deal as much damage:
+                HP = 20
+                Atk_Dmg = 10
+                
+                Samurai have achieved balance through hard work and diligance:
+                HP = 15
+                Atk_Dmg = 15
+                
+                Vikings are the warriors of the north and have super human strength, but lack armor:
+                HP = 10
+                Atk_Dmg = 20
+                """)
+        else:
+            print("Please select user class")
+
+    return player
+
+
+def explore():
+    adjective = ["Enchanted", "Moss-covered", "Twisting", "Illuminated", "Ancient", "Mystical", "Whispering", "Moonlit", "Secretive", "Overgrown", "Serpentine", "Hidden", "Tranquil", "Arcane", "Spiraled", "Mysterious", "Ephemeral", "Radiant", "Otherworldly","Luminous", "Haunting", "Celestial", "Winding", "Ethereal", "Fabled", "Elusive", "Dreamlike"]
+    
+    door1 = path(rand.choice(adjective))
+    door2 = path(rand.choice(adjective))
+    door3 = path(rand.choice(adjective))
+
+    door_choice = input(
+        f"""
+            Three paths lay ahead. Pick your poison:
+            1. {door1.adjective} left path    2. {door2.adjective} middle path  3. {door3.adjective} right path 
+        """)
+    
+    
+
+
+def inventory():
+    inventory = []
+    print(weapon.name[0])
+    pass
+
+def stats():
+    player = user(player_role)
+    print(f"""
+          Current HP is: {player.hp}
+          Atk dmg is: {player.damage} 
+        """)
+#när man kör funktionen körs funk: user()
+
+
+
+
+def main():
+    lvl = 1
+    potions = ["HP potion"]
+    
+    username = input("Select username young adventurer \n")
+
+    while True:
+        answer_name = input(f" \n       So you are {username}? \n [y/n] \n \n")
+
+        if answer_name == "y":
+            start = input(
+            f"""
+            \n
+            Welcome to the land of Bennäts young {username}! We have summond you to the lords castle to request 
+            a favour from you. The dungoun near Guzzar village has been infested with the demon lords minions 
+            and this has caused the townsfolk great panick! Are you willing to check out the root of the 
+            problem? Of course you will be compensated greatly! [y/n]
+            \n
+            """)
+            break
+        elif answer_name == "n":
+            print("oh, uhm okay... that's fine i guess")
+            exit()
+        else:
+            print("    \n Please answer using y for yes and n for no \n")
+        
+    player = user(username)
+    
+    while player.hp > 0:
+        user_choice = input(
+                """
+                    What do you want to do young hero?
+                    1. Enter deeper into the cave
+                    2. Check inventory
+                    3. Hero stats
+                    4. Run away
+
+                """
+            )
+        if user_choice == "1":
+            explore()
+        elif user_choice == "2":
+            inventory()
+        elif user_choice == "3":
+            stats()  
+        else:
+            print(
+                """ 
+                You coward!! 
+                Never step foot in this land again, live in shame for the rest of your life!   
+                *You have been exiled*
+            """
+            )
+            exit()
+main()

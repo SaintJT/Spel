@@ -3,7 +3,7 @@ import sys
 import time
 
 
-class player_role():
+class player_role():                        #Spelarens klass, ger värden på hp, attack skada, level, spelar klass
     def __init__(self, role, lvl, hp, max_hp, damage):
         self.role = role
         self.lvl = lvl
@@ -12,7 +12,7 @@ class player_role():
         self.damage = damage
 
 
-class monster():
+class monster():                            #Skapar monster som funkar i princip det samma som spelaren förutom level
     def __init__(self, name, damage, hp, max_hp):
         self.name = name
         self.damage = damage
@@ -20,7 +20,7 @@ class monster():
         self.max_hp = max_hp
 
 
-class path():
+class path():                           #ger ett random adjektiv som beskrive vägarna
     def __init__(self, adjective):
         self.adjective = adjective
 
@@ -35,15 +35,15 @@ class Item:
         self.max_hp = item_max_hp
 
 
-class Inventory:
+class Inventory:                #spelarens inventory
     def __init__(self):
         self.items = []
 
-    def add_item(self, item):
+    def add_item(self, item):           #printar och lägger till föremål i inventory
         self.items.append(item)
         print_slow(f"**You acquired {item.name}.** \n")
 
-    def display_inventory(self, player, player_inventory):
+    def display_inventory(self, player, player_inventory):          #visar vilka föremål som är i inventory
         if not self.items:
             print_slow("Your inventory is empty.\n")
         else:
@@ -56,12 +56,12 @@ class Inventory:
                 else:
                     print_slow("**No item was used**")
 
-    def remove_item(self, item):
+    def remove_item(self, item):            #tar bort föremål efter de används
         if item in self.items:
             self.items.remove(item)
 
 
-def use_item(player, item, player_inventory):
+def use_item(player, item, player_inventory):           #uppdaterar spelarens stats baserat på vilket föremål som användes
     player.hp += item.hp
     player.damage += item.damage
     player.max_hp += item.max_hp
@@ -72,14 +72,14 @@ press "press" enter to continue\n""")
     return player.hp, player.damage
 
 
-def print_slow(text):
+def print_slow(text):           #funktion som får texten att printas bokstav efter bokstav 
     for letter in text:
         sys.stdout.write(letter)
         sys.stdout.flush()
         time.sleep(0.01)
 
 
-def user(username):
+def user(username):                 #spelaren väljer klass
     while True:
         class_choice = input("""
                             Please select a class:
@@ -126,7 +126,7 @@ def user(username):
     return player
 
 
-def explore(player, username, hp_potion, atk_amulet, player_inventory):
+def explore(player, username, hp_potion, atk_amulet, player_inventory):         #genererar en random outcome och sätter odds på vilken event som ska ske
 
     adjective = ["Enchanted", "Moss-covered", "Twisting", "Illuminated", "Ancient", "Mystical", "Whispering",
                  "Moonlit", "Secretive", "Overgrown", "Serpentine", "Hidden", "Tranquil", "Arcane", "Spiraled",
@@ -169,7 +169,7 @@ def explore(player, username, hp_potion, atk_amulet, player_inventory):
 
 
 
-def handle_event(event, username, player, hp_potion, atk_amulet, player_inventory):
+def handle_event(event, username, player, hp_potion, atk_amulet, player_inventory):         #Startar event som väljs i explore()
     chest = None
     if event == "Monster Fight":
         print_slow("A wild monster appears! Prepare for battle!\n")
@@ -192,7 +192,7 @@ def handle_event(event, username, player, hp_potion, atk_amulet, player_inventor
         Press "Enter" to continue...
               """)
 
-def chest_event(player, hp_potion, atk_amulet, player_inventory):
+def chest_event(player, hp_potion, atk_amulet, player_inventory):               #random outcome, man kan ta skada, hitta ett föremål (hp potion, atk amulet) eller så händer inget
     chest_outcome = rand.choice(["Grant Item", "Trap", "Locked"])
     if chest_outcome == "Grant Item":
         print_slow("**You found a potion inside the chest!** \n")
@@ -213,9 +213,9 @@ def chest_event(player, hp_potion, atk_amulet, player_inventory):
 
 def monster_fight(player, username, hp_potion, atk_amulet, player_inventory):
     monster_name = ["Hoard of goblins", "Skeleton", "Zombie", "Orc", "Troll", "Oni", "Medusa", "Ghoul", "Minotaur",
-                    "Mimic", "Banshee", "Wraith", "lich", "Wyvern", "slime", "Orochi"]
+                    "Mimic", "Banshee", "Wraith", "lich", "Wyvern", "slime", "Orochi"]              #lista på monster namn
     spawn_monster_max_hp = rand.randint(10, 35)
-    spawn_monster = monster(rand.choice(monster_name), rand.randint(3, 7), spawn_monster_max_hp, spawn_monster_max_hp)
+    spawn_monster = monster(rand.choice(monster_name), rand.randint(3, 7), spawn_monster_max_hp, spawn_monster_max_hp)      #väljer ett random namn, skada och hp och sätter in det i en klass så att unika monster kan spawnas varje gång
     print_slow(f"**You encountered a wild {spawn_monster.name} {spawn_monster_max_hp}/{spawn_monster_max_hp}**\n")
     while player.hp > 0 and spawn_monster.hp > 0:
         player_attack = rand.randint(5, player.damage)
@@ -242,13 +242,14 @@ def monster_fight(player, username, hp_potion, atk_amulet, player_inventory):
             break
 
 
-def fountain_of_youth(player):
+def fountain_of_youth(player):          #event som ger spelare mer hp
     player.hp = min(player.hp + 15, player.max_hp)
+    player.max_hp += 10
     print_slow("""
     **You took a rejuvenating sip from the magical fountain and it restored 15hp**
           """)
 
-def attack_boss(player, Demon_Lord):
+def attack_boss(player, Demon_Lord):        #gjorde en separat funktion så att man attakerar bossen bara om man väljer att göra det
         player_attack = rand.randint(5, player.damage)
         Demon_Lord.hp -= player_attack
         print_slow(f"**You attacked the {Demon_Lord.name} for {player_attack} damage!**\n")
@@ -258,7 +259,7 @@ def attack_boss(player, Demon_Lord):
         print_slow(f"**The Demon lord attacks you for {Demon_Lord.damage} damage!**\n")
 
 
-def stats(player, username):
+def stats(player, username):        #printar splearens status
     print_slow(f"""
 {player.role}  {username}: lvl {player.lvl}
 Current hp is: {player.hp}/{player.max_hp}
@@ -266,7 +267,7 @@ Atk dmg is: {player.damage}
 press "enter" to continue...
 """)
 
-def end(player, username, player_inventory, Demon_Lord):
+def end(player, username, player_inventory, Demon_Lord):        #end funktion som avslutar spelet och spawnar bossen
     print_slow("""***The cave starts shaking***\n""")
     print_slow("***A screaching sound echoes through the thick walls***\n")
     print_slow("***The demon king has been summond***\n")
@@ -323,13 +324,13 @@ Thank you from me and every citizen of the land of Bennäts!""")
         exit()
     return Demon_Lord
 
-def main():
+def main():         #main funktionen kallar på alla andra funktioner och loopar spelet tills spelaren når level 10
     hp_potion = Item(1, "Health Potion", "A mystical white drink, believed to be filled with water taken from the fountain of youth. + 10hp\n", 0, 10, 10)
-    atk_amulet = Item(1, "Atk Amulet", "A shiny gem on a silver locket that gives additional strength + 10 atk dmg\n", 10, 0, 0)
-    player_inventory = Inventory()
+    atk_amulet = Item(1, "Atk Amulet", "A shiny gem on a silver locket that gives additional strength + 10 atk dmg\n", 10, 0, 0)            #definerar föremålen som kan droppas
+    player_inventory = Inventory()          #lista som är spelarens ryggsäck
     Demon_Lord = monster("Demon Lord", 10, 40,40)
 
-    while True:
+    while True:         #while loop som ser till att spelet inte fortsätter föräns spelaren anger ett valid input
         username = input("Select username young adventurer: \n")
 
         print_slow(f"\nSo you are {username}? \n")
@@ -358,9 +359,9 @@ Of course, you will be compensated greatly!\n""")
         else:
             start = input("Please enter valid input (y/n): ")
 
-    player = user(username)
+    player = user(username)             #skapar ett objekt med värdena som returnas av user() 
 
-    while player.hp > 0 and player.lvl < 10:
+    while player.hp > 0 and player.lvl < 10:            #while loop som spelas om tills spelaren dör eller når lvl 10
         user_choice = input(
             """
                                     What do you want to do young hero?
@@ -370,8 +371,8 @@ Of course, you will be compensated greatly!\n""")
                 """
         )
 
-        if user_choice == "1":
-            explore(player, username, hp_potion, atk_amulet, player_inventory)
+        if user_choice == "1":              #kör en funktion baserat på spelarens val
+            explore(player, username, hp_potion, atk_amulet, player_inventory)        
         elif user_choice == "2":
             player_inventory.display_inventory(player, player_inventory)
         elif user_choice == "3":
@@ -389,14 +390,11 @@ Of course, you will be compensated greatly!\n""")
         else:
             print_slow("**Enter valid input**")
 
-    if player.hp >= 0 and player.lvl >= 10:
+    if player.hp >= 0 and player.lvl >= 10:         #när spelaren når level 10 spelas slut funktionen
         while True:
             ending = input("Are you ready to fight the boss?\n")
             if ending == "y" or ending == "yes":
                 end(player, username, player_inventory, Demon_Lord)
-            else:
-                print_slow("Prepare yourself for the end...")
-                break
-    return Demon_Lord
+    return Demon_Lord           #gör det möjligt att skicka Demon_Lord till andra funktioner
 
-main()
+main()              #kallar på main() så att spelet startas

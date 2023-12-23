@@ -54,11 +54,12 @@ class Inventory:
                 if item_use == "yes" or item_use == "y":
                     use_item(player, item, player_inventory)
                 else:
-                    print_slow("**No item was used**")
+                    print_slow("**No item was used**\n")
 
     def remove_item(self, item):
         if item in self.items:
             self.items.remove(item)
+
 
 
 def use_item(player, item, player_inventory):           #uppdaterar spelarens stats baserat på vilket föremål som användes
@@ -88,7 +89,7 @@ def user(username):                 #spelaren väljer klass
             """)
 
         if class_choice == "1":
-            player = player_role("Knight", 1, 200, 20, 15)
+            player = player_role("Knight", 10, 20, 20, 15)
             print_slow(f"Welcome brave Knight {username}, hm Knight {username} sure has a very nice ring to it \n")
             break
         elif class_choice == "2":
@@ -191,34 +192,43 @@ press "enter" to continue""")
 
 
 def chest_event(player, hp_potion, atk_amulet, good_luck, player_inventory):               #random outcome, man kan ta skada, hitta ett föremål (hp potion, atk amulet) eller så händer inget
-    chest_outcome = rand.choice(["Grant Item", "Trap", "Locked"])
-    if chest_outcome == "Grant Item":
+    chest_outcome = rand.randint(1,100)
+    if chest_outcome >= 1 and chest_outcome < 50:
         print_slow("**You found a potion inside the chest!** \n")
-        random_item = rand.choice([hp_potion, atk_amulet, good_luck])
-        player_inventory.add_item(random_item)
+        random_item = rand.randint(1,100)
+        if random_item >= 1 and random_item < 30:
+            player_inventory.add_item(hp_potion)
+        elif random_item >= 30 and random_item < 50:
+            player_inventory.add_item(atk_amulet)
+        else:
+            player_inventory.add_item(good_luck)
 
-    elif chest_outcome == "Trap":
+    elif chest_outcome >= 50 and chest_outcome <75:
         print_slow("**Oh no! The chest was a trap. You took 5 dmg** \n")
         player.hp -= 5
         if player.hp <= 0:
             print("....**The chest killed you**.....")
             exit()
-    elif chest_outcome == "Locked":
-        print_slow("**The chest won't budge, you continue with your quest** \n")
     else:
-        input("""
-                Well, that did nothing....
-                press "Enter" to continue...
-            """)
+        print_slow("**The chest won't budge, you continue with your quest** \n")
 
 def attack_monster(player, spawn_monster):
-    if player.hp >= 0 and spawn_monster.hp >= 0:
+    if player.hp >= 0:
         player_attack = rand.randint(5, player.damage)
         spawn_monster.hp -= player_attack
         print_slow(f"**You attacked the {spawn_monster.name} for {player_attack} damage!**\n")
 
-        player.hp -= spawn_monster.damage
-        print_slow(f"**The {spawn_monster.name} attacks you for {spawn_monster.damage} damage!**\n")
+    if spawn_monster.hp >= 0:
+                monster_attack = rand.randint(1, spawn_monster.damage)
+                player.hp -= monster_attack
+                print_slow(f"**The {spawn_monster.name} attacks you for {monster_attack} damage!**\n")            #separata funktioner så att ifall spelaren dödar monstret så kan monstret inte attackera tillbaka
+    
+def monster_stats(spawn_monster):
+    print_slow(f"""
+{spawn_monster.name}:
+Attack Damage: {spawn_monster.damage}
+Current HP: {spawn_monster.hp}/{spawn_monster.max_hp}
+""")
     
 def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inventory):
     monster_name = ["Hoard of goblins", "Skeleton", "Zombie", "Orc", "Troll", "Oni", "Medusa", "Ghoul", "Minotaur",
@@ -226,7 +236,7 @@ def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inv
     spawn_monster_max_hp = rand.randint(10, 35)
     spawn_monster_atk = rand.randint(1, 7)
     spawn_monster = monster(rand.choice(monster_name), spawn_monster_atk, spawn_monster_max_hp, spawn_monster_max_hp)
-    print_slow(f"**You encountered a wild {spawn_monster.name} {spawn_monster_max_hp}/{spawn_monster_max_hp}**\n")
+    print_slow(f"**You encountered a {spawn_monster.name} {spawn_monster_max_hp}/{spawn_monster_max_hp}**\n")
 
     while player.hp > 0 and spawn_monster.hp > 0:
         player_choice = input(
@@ -234,6 +244,7 @@ def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inv
                                     What do you want to do young hero?
                         1. Attack                                2. Check inventory
                         3. Hero stats                            4. Run away
+                                        5. Inspect monster
                 """
         )
 
@@ -252,6 +263,8 @@ def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inv
             """
             )
             exit()
+        elif player_choice =="4":
+            monster_stats(spawn_monster)
         else:
             print_slow("**Enter valid input**")
 
@@ -282,9 +295,9 @@ def attack_boss(player, Demon_Lord):        #gjorde en separat funktion så att 
         Demon_Lord.hp -= player_attack
         print_slow(f"**You attacked the {Demon_Lord.name} for {player_attack} damage!**\n")
 
-        monster_attack = rand.randint(1, Demon_Lord.damage)
-        player.hp -= monster_attack
-        print_slow(f"**The Demon lord attacks you for {Demon_Lord.damage} damage!**\n")
+        Demon_Lord_attack = rand.randint(10, 20)
+        player.hp -= Demon_Lord_attack
+        print_slow(f"**The Demon lord attacks you for {Demon_Lord_attack} damage!**\n")
 
 
 def stats(player, username):        #printar splearens status
@@ -294,6 +307,13 @@ Current hp is: {player.hp}/{player.max_hp}
 Atk dmg is: {player.damage}
 """)
     input("""press "enter" to continue...""")
+
+def demon_lord_stats(Demon_Lord):
+    print_slow(f"""
+{Demon_Lord.name}:
+Attack Damage: {Demon_Lord.damage}
+Current HP: {Demon_Lord.hp}/{Demon_Lord.max_hp}
+""")
 
 def end(player, username, player_inventory, Demon_Lord):        #end funktion som avslutar spelet och spawnar bossen
     print_slow("""***The cave starts shaking***\n""")
@@ -312,7 +332,7 @@ def end(player, username, player_inventory, Demon_Lord):        #end funktion so
                                     What do you want to do young hero?
                         1. Attack                                2. Check inventory
                         3. Hero stats                            4. Run away
-
+                                        5. Inspect Demon Lord
                 """
         )
 
@@ -331,11 +351,11 @@ def end(player, username, player_inventory, Demon_Lord):        #end funktion so
             """
             )
             exit()
+        elif boss_fight == "5":
+            demon_lord_stats(Demon_Lord)
         else:
             print_slow("**Enter valid input**")
 
-        if player.hp > 0 and Demon_Lord.hp < 15:
-                print_slow("""-You really pack a punch huh?\n""")
 
 
     if player.hp <= 0:
@@ -353,7 +373,7 @@ Thank you from me and every citizen of the land of Bennäts!""")
     return Demon_Lord
 
 def main():         #main funktionen kallar på alla andra funktioner och loopar spelet tills spelaren når level 10
-    hp_potion = Item(1, "Health Potion", "A mystical white drink, believed to be filled with water taken from the fountain of youth. + 10hp\n", 0, 10, 0)
+    hp_potion = Item(1, "Health Potion", "A mystical white drink, believed to be filled with water taken from the fountain of youth. + 10hp\n", 0, 10, 5)
     atk_amulet = Item(1, "Atk Amulet", "A shiny gem on a silver locket that gives additional strength + 10 atk dmg\n", 10, 0, 0)            #definerar föremålen som kan droppas
     good_luck = Item(1, "Good Luck charm", "It has it's charming looks but that's it", 0, 0, 0)
     player_inventory = Inventory()          #lista som är spelarens ryggsäck
@@ -398,7 +418,6 @@ Of course, you will be compensated greatly!\n""")
                                     What do you want to do young hero?
                         1. Enter deeper into the cave            2. Check inventory
                         3. Hero stats                            4. Run away
-
                 """
         )
 
@@ -417,7 +436,7 @@ Of course, you will be compensated greatly!\n""")
                 *You have been exiled*
             """
             )
-            exit()
+            exit() 
         else:
             print_slow("**Enter valid input**")
 
@@ -425,6 +444,9 @@ Of course, you will be compensated greatly!\n""")
         while True:
             ending = input("Are you ready to fight the boss?\n")
             if ending == "y" or ending == "yes":
+                end(player, username, player_inventory, Demon_Lord)
+            else:
+                print_slow("Too bad get in there \n")
                 end(player, username, player_inventory, Demon_Lord)
     return Demon_Lord           #gör det möjligt att skicka Demon_Lord till andra funktioner
 

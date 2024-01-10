@@ -226,8 +226,8 @@ def attack_monster(player, spawn_monster):
 def monster_stats(spawn_monster):
     print_slow(f"""
 {spawn_monster.name}:
-{spawn_monster.damage}
-{spawn_monster.hp}/{spawn_monster.max_hp}
+Attack Damage: {spawn_monster.damage}
+Current HP: {spawn_monster.hp}/{spawn_monster.max_hp}
 """)
     
 def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inventory):

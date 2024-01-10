@@ -77,7 +77,7 @@ def print_slow(text):           #funktion som får texten att printas bokstav ef
     for letter in text:
         sys.stdout.write(letter)
         sys.stdout.flush()
-        time.sleep(0.05)
+        time.sleep(0.03)
 
 
 def user(username):                 #spelaren väljer klass
@@ -89,7 +89,7 @@ def user(username):                 #spelaren väljer klass
             """)
 
         if class_choice == "1":
-            player = player_role("Knight", 10, 20, 20, 15)
+            player = player_role("Knight", 1, 20, 20, 15)
             print_slow(f"Welcome brave Knight {username}, hm Knight {username} sure has a very nice ring to it \n")
             break
         elif class_choice == "2":
@@ -97,7 +97,7 @@ def user(username):                 #spelaren väljer klass
             print_slow(f"Welcome brave Samurai {username}, i get the feeling that the name Samurai {username} will bring peace to all of the lands \n")
             break
         elif class_choice == "3":
-            player = player_role("Viking", 1, 12, 12, 18)
+            player = player_role("Viking", 1, 12, 12, 25)
             print_slow(f"Welcome Viking {username}, i can tell that you are a fierce warrior of the sea. \n")
             break
         elif class_choice == "4":
@@ -194,11 +194,11 @@ press "enter" to continue""")
 def chest_event(player, hp_potion, atk_amulet, good_luck, player_inventory):               #random outcome, man kan ta skada, hitta ett föremål (hp potion, atk amulet) eller så händer inget
     chest_outcome = rand.randint(1,100)
     if chest_outcome >= 1 and chest_outcome < 50:
-        print_slow("**You found a potion inside the chest!** \n")
+        print_slow("**You found an item inside the chest!** \n")
         random_item = rand.randint(1,100)
-        if random_item >= 1 and random_item < 30:
+        if random_item >= 50 and random_item < 70:
             player_inventory.add_item(hp_potion)
-        elif random_item >= 30 and random_item < 50:
+        elif random_item >= 70 and random_item < 80:
             player_inventory.add_item(atk_amulet)
         else:
             player_inventory.add_item(good_luck)
@@ -219,29 +219,29 @@ def attack_monster(player, spawn_monster):
         print_slow(f"**You attacked the {spawn_monster.name} for {player_attack} damage!**\n")
 
     if spawn_monster.hp >= 0:
-                monster_attack = rand.randint(1, spawn_monster.damage)
+                monster_attack = rand.randint(5, spawn_monster.damage)
                 player.hp -= monster_attack
                 print_slow(f"**The {spawn_monster.name} attacks you for {monster_attack} damage!**\n")            #separata funktioner så att ifall spelaren dödar monstret så kan monstret inte attackera tillbaka
     
 def monster_stats(spawn_monster):
     print_slow(f"""
 {spawn_monster.name}:
-Attack Damage: {spawn_monster.damage}
-Current HP: {spawn_monster.hp}/{spawn_monster.max_hp}
+{spawn_monster.damage}
+{spawn_monster.hp}/{spawn_monster.max_hp}
 """)
     
 def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inventory):
     monster_name = ["Hoard of goblins", "Skeleton", "Zombie", "Orc", "Troll", "Oni", "Medusa", "Ghoul", "Minotaur",
                     "Mimic", "Banshee", "Wraith", "lich", "Wyvern", "slime", "Orochi"]
     spawn_monster_max_hp = rand.randint(10, 35)
-    spawn_monster_atk = rand.randint(1, 7)
+    spawn_monster_atk = rand.randint(5, 15)
     spawn_monster = monster(rand.choice(monster_name), spawn_monster_atk, spawn_monster_max_hp, spawn_monster_max_hp)
     print_slow(f"**You encountered a {spawn_monster.name} {spawn_monster_max_hp}/{spawn_monster_max_hp}**\n")
 
     while player.hp > 0 and spawn_monster.hp > 0:
         player_choice = input(
             """
-                                    What do you want to do young hero?
+                                 What do you want to do young hero?
                         1. Attack                                2. Check inventory
                         3. Hero stats                            4. Run away
                                         5. Inspect monster
@@ -263,7 +263,7 @@ def monster_fight(player, username, hp_potion, atk_amulet, good_luck, player_inv
             """
             )
             exit()
-        elif player_choice =="4":
+        elif player_choice =="5":
             monster_stats(spawn_monster)
         else:
             print_slow("**Enter valid input**")
@@ -295,7 +295,7 @@ def attack_boss(player, Demon_Lord):        #gjorde en separat funktion så att 
         Demon_Lord.hp -= player_attack
         print_slow(f"**You attacked the {Demon_Lord.name} for {player_attack} damage!**\n")
 
-        Demon_Lord_attack = rand.randint(10, 20)
+        Demon_Lord_attack = rand.randint(1, 20)
         player.hp -= Demon_Lord_attack
         print_slow(f"**The Demon lord attacks you for {Demon_Lord_attack} damage!**\n")
 
@@ -311,8 +311,8 @@ Atk dmg is: {player.damage}
 def demon_lord_stats(Demon_Lord):
     print_slow(f"""
 {Demon_Lord.name}:
-Attack Damage: {Demon_Lord.damage}
-Current HP: {Demon_Lord.hp}/{Demon_Lord.max_hp}
+{Demon_Lord.damage}
+{Demon_Lord.hp}/{Demon_Lord.max_hp}
 """)
 
 def end(player, username, player_inventory, Demon_Lord):        #end funktion som avslutar spelet och spawnar bossen
